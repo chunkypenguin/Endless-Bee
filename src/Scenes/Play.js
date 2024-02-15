@@ -10,9 +10,13 @@ class Play extends Phaser.Scene {
         this.load.image('flytrap', 'FlyTrap.png')
         this.load.image('rosebud', 'LargeRoseBud.png')
         this.load.image('rosebloom', 'LargeRoseBloom.png')
+        this.load.image('violetbud', 'VioletBudLarge.png')
+        this.load.image('violetbloom', 'VioletBloomLarge.png')
+        this.load.image('daisybud', 'DaisyBudLarge.png')
+        this.load.image('daisybloom', 'DaisyBloomLarge.png')
 
                 // load spritesheet
-                this.load.spritesheet('beefly', 'BeeSpriteSheet.png', {
+                this.load.spritesheet('beefly', 'beee.png', {
                     frameWidth: 64,
                     frameHeight: 64,
                     startFrame: 0,
@@ -25,15 +29,7 @@ class Play extends Phaser.Scene {
         this.flowerSpeed = 500
         this.flowerSpeedMax = 1000
 
-
-        //this.flowerY = game.config.height - 100
-
-        //flytrap variables
-        /*
-        this.flyTrapSpawnDelay = 2000
-        this.flyTrapSpeed = 600
-        this.flyTrapSpeedMax = 1000
-        */
+        this.flowerScore = 0
 
         this.beeWidth = 32
         this.beeHeight = 128
@@ -43,12 +39,49 @@ class Play extends Phaser.Scene {
         this.beeBounce = 0.5
         this.beeDragX = 1200
 
+        // most recent flower object
+        this.recentFlower = 0
+
+        this.flowerXOld = 0
         this.flowerX = game.config.width/2
         this.flowerXLeast = this.beeWidth
         this.flowerXMost = game.config.width - this.beeWidth
+
+        this.flowerTwoXOld = 0
+        this.flowerTwo = 0
+        this.flowerTwoX = game.config.width/2
+        this.flowerTwoXLeast = this.beeWidth
+        this.flowerTwoXMost = game.config.width - this.beeWidth
+
+        this.flowerThree = 0
+        this.flowerThreeX = game.config.width/2
+        this.flowerThreeXLeast = this.beeWidth
+        this.flowerThreeXMost = game.config.width - this.beeWidth
     }
 
     create() {
+
+        this.canCollide = true
+        this.thisFlower = 0
+        this.thisFlowerTwo = 0
+        this.thisFlowerThree = 0
+
+        // display score
+        let scoreConfig = {
+            frontFamily: 'Courier',
+            fontSize: '72px',
+            backgroundColor: '#F3B141',
+            color: '#843605',
+            align: 'left',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 150
+        }
+
+
+
         // place tile sprite
         this.bgImage = this.add.tileSprite(0, 0, 640, 960,
             'greenbg').setOrigin(0,0)
@@ -88,20 +121,26 @@ class Play extends Phaser.Scene {
             this.addFlower()
         })
 
-        /*
-        // set up flytrap group
-        this.barrierGroup = this.add.group({
+        // set up flower group
+        this.flowerTwoGroup = this.add.group({
             runChildUpdate: true // make sure update runs on group children
         })
-        // wait a few seconds before spawning flytraps
-        this.time.delayedCall(this.flyTrapSpawnDelay, () => { 
-            this.addBarrier()
+        // wait a few seconds before spawning flowers
+        this.time.delayedCall(this.flowerSpawnDelay + 250, () => { 
+            this.addFlowerTwo()
         })
-        */
 
+        // set up flower group
+        this.flowerThreeGroup = this.add.group({
+            runChildUpdate: true // make sure update runs on group children
+        })
+        // wait a few seconds before spawning flowers
+        this.time.delayedCall(this.flowerSpawnDelay + 500, () => { 
+            this.addFlowerThree()
+        })
+
+        this.score = this.add.text(25, 25, this.flowerScore, scoreConfig)
     }
-
-
 
     update() {
         // utiliize right and left arrow keys to move bee side to side
@@ -113,42 +152,161 @@ class Play extends Phaser.Scene {
 
         // check for collisions
         this.physics.world.collide(this.bee, this.flowerGroup, this.flowerCollision, null, this)
+        this.physics.world.collide(this.bee, this.flowerTwoGroup, this.flowerTwoCollision, null, this)
+        this.physics.world.collide(this.bee, this.flowerThreeGroup, this.flowerThreeCollision, null, this)
 
         this.bgImage.tilePositionY -= 3
     }
 
     // create new flowers and add them to existing flower group
     addFlower() {
-        let flower = new Flowers(this, this.flowerSpeed, this.flowerXLeast, this.flowerXMost)
+        this.flower = new Flowers(this, this.flowerSpeed, this.flowerXLeast, this.flowerXMost)
+
+        if((this.flower.x < this.recentFlower.x + 64) && this.flower.x > this.recentFlower.x){
+            this.flower.x += 200
+        }
+
+        else if ((this.flower.x > this.recentFlower.x - 64) && this.flower.x < this.recentFlower.x){
+            this.flower.x -= 200
+        }
+
+        if(this.flower.x < this.beeWidth){
+            this.flower.x = this.beeWidth
+        }
+
+        if(this.flower.x > this.game.config.width - this.beeWidth){
+            this.flower.x = this.game.config.width - this.beeWidth
+        }
+
 
         // place next flower within range of most recent flower (that way flowers are always bloomable)
-        this.flowerXLeast = flower.x - 150
+        this.flowerXLeast = this.flower.x - 150
         if( this.flowerXLeast < this.beeWidth){
             this.flowerXLeast = this.beeWidth
         }
 
-        this.flowerXMost = flower.x + 150
+        this.flowerXMost = this.flower.x + 150
 
         if( this.flowerXMost > this.game.config.width - this.beeWidth){
             this.flowerXMost = this.game.config.width - this.beeWidth
         }
 
-        this.flowerGroup.add(flower)
+        this.flowerGroup.add(this.flower)
+
+        this.recentFlower = this.flower
     }
 
-    /*
-    // create new barriers and add them to existing barrier group
-    addBarrier() {
-        let speedVariance =  Phaser.Math.Between(0, 50)
-        let barrier = new FlyTraps(this, this.flyTrapSpeed - speedVariance, this.beeWidth, this.beeHeight)
-        this.barrierGroup.add(barrier)
+    addFlowerTwo() {
+        this.flowerTwo = new FlowersTwo(this, this.flowerSpeed, this.flowerTwoXLeast, this.flowerTwoXMost)
+
+        
+        if((this.flowerTwo.x < this.recentFlower.x + 64) && this.flowerTwo.x > this.recentFlower.x){
+            this.flowerTwo.x += 200
+        }
+
+        else if ((this.flowerTwo.x > this.recentFlower.x - 64) && this.flowerTwo.x < this.recentFlower.x){
+            this.flowerTwo.x -= 200
+        }
+
+        if(this.flowerTwo.x < this.beeWidth){
+            this.flowerTwo.x = this.beeWidth
+        }
+
+        if(this.flowerTwo.x > this.game.config.width - this.beeWidth){
+            this.flowerTwo.x = this.game.config.width - this.beeWidth
+        }
+
+        // place next flower within range of most recent flower (that way flowers are always bloomable)
+        this.flowerTwoXLeast = this.flowerTwo.x - 150
+        if( this.flowerTwoXLeast < this.beeWidth){
+            this.flowerTwoXLeast = this.beeWidth
+        }
+
+        this.flowerTwoXMost = this.flowerTwo.x + 150
+
+        if( this.flowerTwoXMost > this.game.config.width - this.beeWidth){
+            this.flowerTwoXMost = this.game.config.width - this.beeWidth
+        }
+
+        this.flowerTwoGroup.add(this.flowerTwo)
+
+        this.recentFlower = this.flowerTwo
     }
-    */
+
+    addFlowerThree() {
+        this.flowerThree = new FlowersThree(this, this.flowerSpeed, this.flowerThreeXLeast, this.flowerThreeXMost)
+
+
+        if((this.flowerThree.x < this.recentFlower.x + 64) && this.flowerThree.x > this.recentFlower.x){
+            this.flowerThree.x += 200
+        }
+
+        else if ((this.flowerThree.x > this.recentFlower.x - 64) && this.flowerThree.x < this.recentFlower.x){
+            this.flowerThree.x -= 200
+        }
+
+
+        if(this.flowerThree.x < this.beeWidth){
+            this.flowerThree.x = this.beeWidth
+        }
+
+        if(this.flowerThree.x > this.game.config.width - this.beeWidth){
+            this.flowerThree.x = this.game.config.width - this.beeWidth
+        }
+    
+        // place next flower within range of most recent flower (that way flowers are always bloomable)
+        this.flowerThreeXLeast = this.flowerThree.x - 150
+        if( this.flowerThreeXLeast < this.beeWidth){
+            this.flowerThreeXLeast = this.beeWidth
+        }
+
+        this.flowerThreeXMost = this.flowerThree.x + 150
+
+        if( this.flowerThreeXMost > this.game.config.width - this.beeWidth){
+            this.flowerThreeXMost = this.game.config.width - this.beeWidth
+        }
+
+        this.flowerThreeGroup.add(this.flowerThree)
+
+        this.recentFlower = this.flowerThree
+    }
 
     flowerCollision(bee, flower) {
-
-        //change sprite texture to bloom
-        flower.setTexture('rosebloom')
+        if(this.thisFlower == flower){
+            //console.log('already flower')
+        }
+        else{
+            //change sprite texture to bloom
+            flower.setTexture('rosebloom')
+            this.flowerScore++
+            this.score.text = this.flowerScore
+            this.thisFlower = flower
+        }
     }
 
+    flowerTwoCollision(bee, flowerTwo) {
+        if(this.thisFlowerTwo == flowerTwo){
+            //console.log('already flower')
+        }
+        else{
+            //change sprite texture to bloom
+            flowerTwo.setTexture('violetbloom')
+            this.flowerScore++
+            this.score.text = this.flowerScore
+            this.thisFlowerTwo = flowerTwo
+        }
+    }
+
+    flowerThreeCollision(bee, flowerThree) {
+        if(this.thisFlower == flowerThree){
+            //console.log('already flower')
+        }
+        else{
+            //change sprite texture to bloom
+            flowerThree.setTexture('daisybloom')
+            this.flowerScore++
+            this.score.text = this.flowerScore
+            this.thisFlower = flowerThree
+        }
+    }
 }

@@ -1,9 +1,9 @@
-class Flowers extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, velocity, flowerXLeast, flowerXMost) {
+class FlowersTwo extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene, velocity, flowerTwoXLeast, flowerTwoXMost) {
         // call Phaser Physics Sprite constructor
         // scene, spawn point (X(between right and left side of screen), Y( set to top of screen), etc, etc)
         //super(scene, Phaser.Math.Between(beeWidth, game.config.width - beeWidth), -100, 'rosebud')
-        super(scene, Phaser.Math.Between(flowerXLeast, flowerXMost), -100, 'rosebud')
+        super(scene, Phaser.Math.Between(flowerTwoXLeast, flowerTwoXMost), -100, 'violetbud')
         
         this.parentScene = scene               // maintain scene context
 
@@ -20,7 +20,7 @@ class Flowers extends Phaser.Physics.Arcade.Sprite {
         // add new barrier when existing barrier hits center X
         if(this.newFlower && this.y > 100) {
             // (recursively) call parent scene method from this context
-            this.parentScene.addFlower(this.parent, this.velocity)
+            this.parentScene.addFlowerTwo(this.parent, this.velocity)
             this.newFlower = false
         }
 
