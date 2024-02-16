@@ -6,7 +6,7 @@ class Menu extends Phaser.Scene{ //Menu class becomes a child of Phaser.Scene
     preload() {
         this.load.image('beegin', './assets/Beegin.png')
 
-        this.load.audio('music', './assets/beebgmusic.mp3')
+        this.load.audio('music', './assets/beebgmusic.wav')
 
     }
 
@@ -22,6 +22,15 @@ class Menu extends Phaser.Scene{ //Menu class becomes a child of Phaser.Scene
 
         if (this.musicPlayed && this.scene.isActive('playScene')){
             this.musicPlayed = false
+        }
+
+        keyRIGHT = 
+        this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT)
+    }
+
+    update() {
+        if (Phaser.Input.Keyboard.JustDown(keyRIGHT)){
+            this.scene.start('playScene')
         }
     }
 }

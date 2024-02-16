@@ -42,17 +42,20 @@ class Play extends Phaser.Scene {
         // most recent flower object
         this.recentFlower = 0
 
+        this.roseHit = 0
         this.flowerXOld = 0
         this.flowerX = game.config.width/2
         this.flowerXLeast = this.beeWidth
         this.flowerXMost = game.config.width - this.beeWidth
 
+        this.violetHit = 0
         this.flowerTwoXOld = 0
         this.flowerTwo = 0
         this.flowerTwoX = game.config.width/2
         this.flowerTwoXLeast = this.beeWidth
         this.flowerTwoXMost = game.config.width - this.beeWidth
 
+        this.daisyHit = 0
         this.flowerThree = 0
         this.flowerThreeX = game.config.width/2
         this.flowerThreeXLeast = this.beeWidth
@@ -70,7 +73,7 @@ class Play extends Phaser.Scene {
         let scoreConfig = {
             frontFamily: 'Courier',
             fontSize: '72px',
-            backgroundColor: '#F3B141',
+            backgroundColor: '#0BD117',
             color: '#843605',
             align: 'left',
             padding: {
@@ -155,7 +158,7 @@ class Play extends Phaser.Scene {
         this.physics.world.collide(this.bee, this.flowerTwoGroup, this.flowerTwoCollision, null, this)
         this.physics.world.collide(this.bee, this.flowerThreeGroup, this.flowerThreeCollision, null, this)
 
-        this.bgImage.tilePositionY -= 3
+        this.bgImage.tilePositionY -= 8
     }
 
     // create new flowers and add them to existing flower group
@@ -278,6 +281,7 @@ class Play extends Phaser.Scene {
         else{
             //change sprite texture to bloom
             flower.setTexture('rosebloom')
+            this.roseHit++
             this.flowerScore++
             this.score.text = this.flowerScore
             this.thisFlower = flower
@@ -291,6 +295,7 @@ class Play extends Phaser.Scene {
         else{
             //change sprite texture to bloom
             flowerTwo.setTexture('violetbloom')
+            this.violetHit++
             this.flowerScore++
             this.score.text = this.flowerScore
             this.thisFlowerTwo = flowerTwo
@@ -304,7 +309,14 @@ class Play extends Phaser.Scene {
         else{
             //change sprite texture to bloom
             flowerThree.setTexture('daisybloom')
-            this.flowerScore++
+            this.daisyHit++
+            if(this.daisyHit > 9){
+                this.flowerScore += 2
+            }
+            else{
+                this.flowerScore++
+            }
+
             this.score.text = this.flowerScore
             this.thisFlower = flowerThree
         }

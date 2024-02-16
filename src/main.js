@@ -28,3 +28,5 @@ let h = game.config.height
 //let { width, height } = game.config
 
 let cursors
+
+let keyRIGHT
