@@ -4,9 +4,9 @@ class Menu extends Phaser.Scene{ //Menu class becomes a child of Phaser.Scene
     }
 
     preload() {
-        this.load.image('beegin', './assets/Beegin.png')
-
+        this.load.image('beegin', './assets/BeeginTwo.png')
         this.load.audio('music', './assets/beebgmusic.wav')
+        this.load.audio('pickup', './assets/itempickup.wav')
 
     }
 
@@ -30,6 +30,7 @@ class Menu extends Phaser.Scene{ //Menu class becomes a child of Phaser.Scene
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyRIGHT)){
+            this.sound.play('pickup')
             this.scene.start('playScene')
         }
     }

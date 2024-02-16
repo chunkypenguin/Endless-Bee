@@ -158,7 +158,7 @@ class Play extends Phaser.Scene {
         this.physics.world.collide(this.bee, this.flowerTwoGroup, this.flowerTwoCollision, null, this)
         this.physics.world.collide(this.bee, this.flowerThreeGroup, this.flowerThreeCollision, null, this)
 
-        this.bgImage.tilePositionY -= 8
+        this.bgImage.tilePositionY -= 3
     }
 
     // create new flowers and add them to existing flower group
@@ -281,6 +281,9 @@ class Play extends Phaser.Scene {
         else{
             //change sprite texture to bloom
             flower.setTexture('rosebloom')
+
+            this.sound.play('pickup')
+
             this.roseHit++
             this.flowerScore++
             this.score.text = this.flowerScore
@@ -295,6 +298,9 @@ class Play extends Phaser.Scene {
         else{
             //change sprite texture to bloom
             flowerTwo.setTexture('violetbloom')
+
+            this.sound.play('pickup')
+
             this.violetHit++
             this.flowerScore++
             this.score.text = this.flowerScore
@@ -309,6 +315,9 @@ class Play extends Phaser.Scene {
         else{
             //change sprite texture to bloom
             flowerThree.setTexture('daisybloom')
+
+            this.sound.play('pickup')
+
             this.daisyHit++
             if(this.daisyHit > 9){
                 this.flowerScore += 2
