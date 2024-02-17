@@ -1,10 +1,12 @@
 class Spider extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, velocity, spiderXLeast, spiderXMost, randomX) {
+    constructor(scene, velocity, spiderDifMod, randomX) {
         // call Phaser Physics Sprite constructor
         
         super(scene, randomX, -100, 'spider')
         
         this.parentScene = scene               // maintain scene context
+
+        this.spiderMod = spiderDifMod
 
         // set up physics sprite
         this.parentScene.add.existing(this)    // add to existing scene, displayList, updateList
@@ -25,10 +27,11 @@ class Spider extends Phaser.Physics.Arcade.Sprite {
 
     update() {
         // add new barrier when existing barrier hits center X
-        if(this.newSpider && this.y > 500) {
+        if(this.newSpider && this.y > (game.config.height/2) * this.spiderMod) {
             // (recursively) call parent scene method from this context
             this.parentScene.addSpider(this.parent, this.velocity)
             this.newSpider = false
+            //console.log(this.spiderMod)
         }
 
         // destroy paddle if it reaches the left edge of the screen

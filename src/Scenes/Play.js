@@ -5,9 +5,7 @@ class Play extends Phaser.Scene {
 
     init(){
 
-
-
-        this.flowerSpawnDelay = 2000
+        this.flowerSpawnDelay = 1000
         this.flowerSpeed = 500
         this.flowerSpeedMax = 1000
 
@@ -15,13 +13,14 @@ class Play extends Phaser.Scene {
 
         this.beeWidth = 32
         this.beeHeight = 128
-        this.beelocity = 100
+        this.beelocity = 125
         this.beeY = 650
         this.maxBeelocity = 500
         this.beeBounce = 0.5
         this.beeDragX = 1200
 
-        this.spiderSpawnDelay = 1000
+        this.spiderSpawnDelay = 5000
+        this.spiderDifMod = 2
         this.spiderSpeed = 650
         this.spiderXLeast = this.beeWidth
         this.spiderXMost = game.config.width - this.beeWidth
@@ -99,7 +98,7 @@ class Play extends Phaser.Scene {
         this.bee.setImmovable()
         this.bee.setMaxVelocity(this.maxBeelocity,0 )
         this.bee.setDragX(this.beeDragX)
-        this.bee.setDepth(1) // ensures that paddle z-depth remains above shadow paddles
+        this.bee.setDepth(1)
         this.bee.destroyed = false // custom property to track paddle life
         this.bee.setBlendMode('SCREEN') // set a WebGL blend mode
 
@@ -143,7 +142,14 @@ class Play extends Phaser.Scene {
             this.addSpider()
         })
         
-        this.score = this.add.text(25, 25, this.flowerScore, scoreConfig)
+        this.timer = this.time.addEvent({
+            delay: 10000,
+            callback: this.spiderMod,
+            callbackScope: this,
+            loop: true
+        })
+
+        this.score = this.add.text(25, 25, this.flowerScore, scoreConfig, {depth: 2})
     }
 
     update() {
@@ -170,11 +176,18 @@ class Play extends Phaser.Scene {
     }
 
 
+    spiderMod() {
+        if(this.spiderDifMod >= 0.25){
+            this.spiderDifMod -= 0.2
+        }
+
+    }
+
     addSpider() {
 
         this.randomX = Phaser.Math.Between(this.spiderXLeast, this.spiderXMost)
         
-        this.spider = new Spider(this, this.spiderSpeed, this.spiderXLeast, this.spiderXMost, this.randomX)
+        this.spider = new Spider(this, this.spiderSpeed, this.spiderDifMod, this.randomX )
 
         this.spiderGroup.add(this.spider)
         this.spider.depth = 1
@@ -294,7 +307,6 @@ class Play extends Phaser.Scene {
     }
 
     spiderCollision(bee, spider) {
-        //console.log("spider hit")
         this.bee.destroyed = true
         this.bee.destroy()
         // switch scenes after timer expires, passing current level to next scene
@@ -303,7 +315,6 @@ class Play extends Phaser.Scene {
 
     flowerCollision(bee, flower) {
         if(flower.texture.key == 'rosebloom'){
-            console.log('no collision plz')
         }
         else{
             //change sprite texture to bloom
@@ -320,7 +331,7 @@ class Play extends Phaser.Scene {
     }
 
     flowerTwoCollision(bee, flowerTwo) {
-        if(this.thisFlowerTwo == flowerTwo){
+        if(flowerTwo.texture.key == 'violetbloom'){
             //console.log('already flower')
         }
         else{
@@ -338,7 +349,7 @@ class Play extends Phaser.Scene {
     }
 
     flowerThreeCollision(bee, flowerThree) {
-        if(this.thisFlower == flowerThree){
+        if(flowerThree.texture.key == 'daisybloom'){
             //console.log('already flower')
         }
         else{
