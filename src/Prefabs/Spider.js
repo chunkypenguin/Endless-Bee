@@ -1,14 +1,23 @@
 class Spider extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, velocity, spiderXLeast, spiderXMost) {
+    constructor(scene, velocity, spiderXLeast, spiderXMost, randomX) {
         // call Phaser Physics Sprite constructor
-        super(scene, Phaser.Math.Between(spiderXLeast, spiderXMost), -100, 'spider')
+        
+        super(scene, randomX, -100, 'spider')
         
         this.parentScene = scene               // maintain scene context
 
         // set up physics sprite
         this.parentScene.add.existing(this)    // add to existing scene, displayList, updateList
         this.parentScene.physics.add.existing(this) // add to physics system
-        this.setVelocityY(velocity)            // make it go!
+        this.setVelocityY(velocity) 
+        //if on right
+        if(randomX >= 320){
+            this.setVelocityX(-velocity + 400) 
+        }
+        else{
+            this.setVelocityX(velocity - 400)
+        }
+          // make it go!
         this.setImmovable()                    
         //this.tint = Math.random() * 0xFFFFFF   // randomize tint
         this.newSpider = true                 // custom property to control barrier spawning

@@ -5,10 +5,7 @@ class Play extends Phaser.Scene {
 
     init(){
 
-        this.spiderSpawnDelay = 500
-        this.spiderSpeed = 50
-        this.spiderXLeast = this.beeWidth
-        this.spiderXMost = game.config.width - this.beeWidth
+
 
         this.flowerSpawnDelay = 2000
         this.flowerSpeed = 500
@@ -23,6 +20,11 @@ class Play extends Phaser.Scene {
         this.maxBeelocity = 500
         this.beeBounce = 0.5
         this.beeDragX = 1200
+
+        this.spiderSpawnDelay = 1000
+        this.spiderSpeed = 500
+        this.spiderXLeast = this.beeWidth
+        this.spiderXMost = game.config.width - this.beeWidth
 
         // most recent flower object
         this.recentFlower = 0
@@ -104,7 +106,7 @@ class Play extends Phaser.Scene {
 
 
 
-        /*
+        
         // set up flower group
         this.flowerGroup = this.add.group({
             runChildUpdate: true // make sure update runs on group children
@@ -133,8 +135,8 @@ class Play extends Phaser.Scene {
             this.addFlowerThree()
         })
 
-        */
-       
+        
+
         this.spiderGroup = this.add.group({
             runChildUpdate: true // make sure update runs on group children
         })
@@ -166,11 +168,13 @@ class Play extends Phaser.Scene {
 
 
     addSpider() {
-        this.spider = new Spider(this, this.spiderSpeed, this.spiderXLeast, this.spiderXMost)
+
+        this.randomX = Phaser.Math.Between(this.spiderXLeast, this.spiderXMost)
+        
+        this.spider = new Spider(this, this.spiderSpeed, this.spiderXLeast, this.spiderXMost, this.randomX)
 
         this.spiderGroup.add(this.spider)
-
-        console.log('spider')
+        this.spider.depth = 1
     }
 
     // create new flowers and add them to existing flower group
@@ -214,19 +218,20 @@ class Play extends Phaser.Scene {
     addFlowerTwo() {
         this.flowerTwo = new FlowersTwo(this, this.flowerSpeed, this.flowerTwoXLeast, this.flowerTwoXMost)
 
-        
+        // if this flower spawns overlapping the right side of previous flower, push to the right
         if((this.flowerTwo.x < this.recentFlower.x + 64) && this.flowerTwo.x > this.recentFlower.x){
             this.flowerTwo.x += 200
         }
-
+        // if this flower spawns overlapping the left side of previous flower, push to the left
         else if ((this.flowerTwo.x > this.recentFlower.x - 64) && this.flowerTwo.x < this.recentFlower.x){
             this.flowerTwo.x -= 200
         }
 
+        // if this flower spawns near the left border, push it to the right
         if(this.flowerTwo.x < this.beeWidth){
             this.flowerTwo.x = this.beeWidth
         }
-
+        // if this flower spawns near the right border, push it to the left
         if(this.flowerTwo.x > this.game.config.width - this.beeWidth){
             this.flowerTwo.x = this.game.config.width - this.beeWidth
         }
@@ -238,7 +243,6 @@ class Play extends Phaser.Scene {
         }
 
         this.flowerTwoXMost = this.flowerTwo.x + 150
-
         if( this.flowerTwoXMost > this.game.config.width - this.beeWidth){
             this.flowerTwoXMost = this.game.config.width - this.beeWidth
         }
