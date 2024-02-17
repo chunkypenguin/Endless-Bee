@@ -50,9 +50,8 @@ class Play extends Phaser.Scene {
     }
 
     create() {
-
+        this.pickUpSound = this.sound.add('pickup', {volume: 0.25, loop: false})
         
-
         this.canCollide = true
         this.thisFlower = 0
         this.thisFlowerTwo = 0
@@ -303,14 +302,15 @@ class Play extends Phaser.Scene {
     }
 
     flowerCollision(bee, flower) {
-        if(this.thisFlower == flower){
-            //console.log('already flower')
+        if(flower.texture.key == 'rosebloom'){
+            console.log('no collision plz')
         }
         else{
             //change sprite texture to bloom
             flower.setTexture('rosebloom')
 
-            this.sound.play('pickup')
+            //this.sound.play('pickup')
+            this.pickUpSound.play()
 
             this.roseHit++
             this.flowerScore++
@@ -327,7 +327,8 @@ class Play extends Phaser.Scene {
             //change sprite texture to bloom
             flowerTwo.setTexture('violetbloom')
 
-            this.sound.play('pickup')
+            //this.sound.play('pickup')
+            this.pickUpSound.play()
 
             this.violetHit++
             this.flowerScore++
@@ -344,7 +345,8 @@ class Play extends Phaser.Scene {
             //change sprite texture to bloom
             flowerThree.setTexture('daisybloom')
 
-            this.sound.play('pickup')
+            //this.sound.play('pickup')
+            this.pickUpSound.play()
 
             this.daisyHit++
             if(this.daisyHit > 9){

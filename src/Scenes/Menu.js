@@ -31,7 +31,7 @@ class Menu extends Phaser.Scene{ //Menu class becomes a child of Phaser.Scene
     create() {
         this.add.sprite(game.config.width/2, game.config.height/2, 'beegin').setScale(1.5)
 
-        this.bgMusic = this.sound.add('music', {volume: 0.5, loop: true})
+        this.bgMusic = this.sound.add('music', {volume: 1, loop: true})
 
         if(!this.musicPlayed){
             this.bgMusic.play()
