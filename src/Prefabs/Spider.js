@@ -1,7 +1,7 @@
-class Flowers extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, velocity, flowerXLeast, flowerXMost) {
+class Spider extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene, velocity, spiderXLeast, spiderXMost) {
         // call Phaser Physics Sprite constructor
-        super(scene, Phaser.Math.Between(flowerXLeast, flowerXMost), -100, 'rosebud')
+        super(scene, Phaser.Math.Between(spiderXLeast, spiderXMost), -100, 'spider')
         
         this.parentScene = scene               // maintain scene context
 
@@ -11,15 +11,15 @@ class Flowers extends Phaser.Physics.Arcade.Sprite {
         this.setVelocityY(velocity)            // make it go!
         this.setImmovable()                    
         //this.tint = Math.random() * 0xFFFFFF   // randomize tint
-        this.newFlower = true                 // custom property to control barrier spawning
+        this.newSpider = true                 // custom property to control barrier spawning
     }
 
     update() {
         // add new barrier when existing barrier hits center X
-        if(this.newFlower && this.y > 100) {
+        if(this.newSpider && this.y > 500) {
             // (recursively) call parent scene method from this context
-            this.parentScene.addFlower(this.parent, this.velocity)
-            this.newFlower = false
+            this.parentScene.addSpider(this.parent, this.velocity)
+            this.newSpider = false
         }
 
         // destroy paddle if it reaches the left edge of the screen

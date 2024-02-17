@@ -3,28 +3,13 @@ class Play extends Phaser.Scene {
         super('playScene')
     }
 
-    preload() {
-        this.load.path = './assets/'
-        this.load.image('bee', 'BensonBee2.png')
-        this.load.image('greenbg', 'GreenBG.png')
-        this.load.image('flytrap', 'FlyTrap.png')
-        this.load.image('rosebud', 'LargeRoseBud.png')
-        this.load.image('rosebloom', 'LargeRoseBloom.png')
-        this.load.image('violetbud', 'VioletBudLarge.png')
-        this.load.image('violetbloom', 'VioletBloomLarge.png')
-        this.load.image('daisybud', 'DaisyBudLarge.png')
-        this.load.image('daisybloom', 'DaisyBloomLarge.png')
-
-                // load spritesheet
-                this.load.spritesheet('beefly', 'beee.png', {
-                    frameWidth: 64,
-                    frameHeight: 64,
-                    startFrame: 0,
-                    endFrame: 6
-                })
-    }
-
     init(){
+
+        this.spiderSpawnDelay = 500
+        this.spiderSpeed = 50
+        this.spiderXLeast = this.beeWidth
+        this.spiderXMost = game.config.width - this.beeWidth
+
         this.flowerSpawnDelay = 2000
         this.flowerSpeed = 500
         this.flowerSpeedMax = 1000
@@ -63,6 +48,8 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+
+        
 
         this.canCollide = true
         this.thisFlower = 0
@@ -115,6 +102,9 @@ class Play extends Phaser.Scene {
         this.bee.destroyed = false // custom property to track paddle life
         this.bee.setBlendMode('SCREEN') // set a WebGL blend mode
 
+
+
+        /*
         // set up flower group
         this.flowerGroup = this.add.group({
             runChildUpdate: true // make sure update runs on group children
@@ -133,6 +123,7 @@ class Play extends Phaser.Scene {
             this.addFlowerTwo()
         })
 
+        
         // set up flower group
         this.flowerThreeGroup = this.add.group({
             runChildUpdate: true // make sure update runs on group children
@@ -142,6 +133,15 @@ class Play extends Phaser.Scene {
             this.addFlowerThree()
         })
 
+        */
+       
+        this.spiderGroup = this.add.group({
+            runChildUpdate: true // make sure update runs on group children
+        })
+        this.time.delayedCall(this.spiderSpawnDelay, () => { 
+            this.addSpider()
+        })
+        
         this.score = this.add.text(25, 25, this.flowerScore, scoreConfig)
     }
 
@@ -154,11 +154,23 @@ class Play extends Phaser.Scene {
         }
 
         // check for collisions
+
+        this.physics.world.collide(this.bee, this.spiderGroup, this.spiderCollision, null, this)
+
         this.physics.world.collide(this.bee, this.flowerGroup, this.flowerCollision, null, this)
         this.physics.world.collide(this.bee, this.flowerTwoGroup, this.flowerTwoCollision, null, this)
         this.physics.world.collide(this.bee, this.flowerThreeGroup, this.flowerThreeCollision, null, this)
 
         this.bgImage.tilePositionY -= 3
+    }
+
+
+    addSpider() {
+        this.spider = new Spider(this, this.spiderSpeed, this.spiderXLeast, this.spiderXMost)
+
+        this.spiderGroup.add(this.spider)
+
+        console.log('spider')
     }
 
     // create new flowers and add them to existing flower group
@@ -272,6 +284,10 @@ class Play extends Phaser.Scene {
         this.flowerThreeGroup.add(this.flowerThree)
 
         this.recentFlower = this.flowerThree
+    }
+
+    spiderCollision(bee, spider) {
+        console.log("spider hit")
     }
 
     flowerCollision(bee, flower) {
