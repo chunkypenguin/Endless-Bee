@@ -11,10 +11,10 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true
+            //debug: true
         }
     },
-    scene: [ Menu, Play ]
+    scene: [ Menu, Play, GameOver ]
 }
 
 let game = new Phaser.Game(config)
@@ -30,3 +30,5 @@ let h = game.config.height
 let cursors
 
 let keyRIGHT
+let keyMENU
+let keyRestart

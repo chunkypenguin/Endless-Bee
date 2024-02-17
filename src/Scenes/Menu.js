@@ -17,6 +17,7 @@ class Menu extends Phaser.Scene{ //Menu class becomes a child of Phaser.Scene
         this.load.image('daisybud', 'DaisyBudLarge.png')
         this.load.image('daisybloom', 'DaisyBloomLarge.png')
         this.load.image('spider', 'Spider.png')
+        this.load.image('gameover', 'GameOver.png')
 
                 // load spritesheet
                 this.load.spritesheet('beefly', 'beee.png', {
@@ -28,7 +29,7 @@ class Menu extends Phaser.Scene{ //Menu class becomes a child of Phaser.Scene
     }
 
     create() {
-        this.add.sprite(game.config.width/2, game.config.height/2, 'beegin') 
+        this.add.sprite(game.config.width/2, game.config.height/2, 'beegin').setScale(1.5)
 
         this.bgMusic = this.sound.add('music', {volume: 0.5, loop: true})
 

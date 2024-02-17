@@ -22,7 +22,7 @@ class Play extends Phaser.Scene {
         this.beeDragX = 1200
 
         this.spiderSpawnDelay = 1000
-        this.spiderSpeed = 500
+        this.spiderSpeed = 650
         this.spiderXLeast = this.beeWidth
         this.spiderXMost = game.config.width - this.beeWidth
 
@@ -148,12 +148,16 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        // utiliize right and left arrow keys to move bee side to side
-        if(cursors.right.isDown) {
-            this.bee.body.velocity.x += this.beelocity
-        } else if(cursors.left.isDown) {
-            this.bee.body.velocity.x -= this.beelocity
+
+        if(!this.bee.destroyed) {
+            // utiliize right and left arrow keys to move bee side to side
+            if(cursors.right.isDown) {
+                this.bee.body.velocity.x += this.beelocity
+            } else if(cursors.left.isDown) {
+                this.bee.body.velocity.x -= this.beelocity
         }
+        }
+
 
         // check for collisions
 
@@ -291,7 +295,11 @@ class Play extends Phaser.Scene {
     }
 
     spiderCollision(bee, spider) {
-        console.log("spider hit")
+        //console.log("spider hit")
+        this.bee.destroyed = true
+        this.bee.destroy()
+        // switch scenes after timer expires, passing current level to next scene
+        this.time.delayedCall(1000, () => { this.scene.start('gameOverScene') })
     }
 
     flowerCollision(bee, flower) {
