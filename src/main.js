@@ -1,7 +1,8 @@
-// Code Practice: RNGolf
 // Name: Alex Beteta
-// Date:2/2/24
-
+// Game Title: Bee Blossom 
+// Hours Spent: 24
+// Creative Tilt: I'm proud that I was able to not have the flowers spawn over each other,
+//  it took awhile to figure it out but I think it was worth it! I also just emjoy the theme of the game!
 'use strict'
 
 let config = {
