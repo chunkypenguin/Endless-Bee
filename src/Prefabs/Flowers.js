@@ -3,26 +3,22 @@ class Flowers extends Phaser.Physics.Arcade.Sprite {
         // call Phaser Physics Sprite constructor
         super(scene, Phaser.Math.Between(flowerXLeast, flowerXMost), -100, 'rosebud')
         
-        this.parentScene = scene               // maintain scene context
+        this.parentScene = scene               
 
         // set up physics sprite
-        this.parentScene.add.existing(this)    // add to existing scene, displayList, updateList
-        this.parentScene.physics.add.existing(this) // add to physics system
-        this.setVelocityY(velocity)            // make it go!
+        this.parentScene.add.existing(this)    
+        this.parentScene.physics.add.existing(this) 
+        this.setVelocityY(velocity)           
         this.setImmovable()                    
-        //this.tint = Math.random() * 0xFFFFFF   // randomize tint
-        this.newFlower = true                 // custom property to control barrier spawning
+        this.newFlower = true          
     }
 
     update() {
-        // add new barrier when existing barrier hits center X
         if(this.newFlower && this.y > 100) {
-            // (recursively) call parent scene method from this context
             this.parentScene.addFlower(this.parent, this.velocity)
             this.newFlower = false
         }
 
-        // destroy paddle if it reaches the left edge of the screen
         if(this.y > game.config.height + 100) {
             this.destroy()
         }

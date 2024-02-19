@@ -89,8 +89,7 @@ class Play extends Phaser.Scene {
         // set up cursor keys
         cursors = this.input.keyboard.createCursorKeys()
 
-        // set up player paddle (physics sprite) and set properties
-        //this.bee = this.physics.add.sprite(centerX, this.beeY, 'bee').setOrigin(0.5)
+        // player Bee properties
         this.bee = this.physics.add.sprite(centerX, this.beeY, 'beefly').setOrigin(0.5)
         this.bee.anims.play('flying')
         this.bee.setCollideWorldBounds(true)
@@ -99,8 +98,8 @@ class Play extends Phaser.Scene {
         this.bee.setMaxVelocity(this.maxBeelocity,0 )
         this.bee.setDragX(this.beeDragX)
         this.bee.setDepth(1)
-        this.bee.destroyed = false // custom property to track paddle life
-        this.bee.setBlendMode('SCREEN') // set a WebGL blend mode
+        this.bee.destroyed = false 
+        this.bee.setBlendMode('SCREEN')
 
 
 
@@ -116,7 +115,7 @@ class Play extends Phaser.Scene {
 
         // set up flower group
         this.flowerTwoGroup = this.add.group({
-            runChildUpdate: true // make sure update runs on group children
+            runChildUpdate: true 
         })
         // wait a few seconds before spawning flowers
         this.time.delayedCall(this.flowerSpawnDelay + 250, () => { 
@@ -126,7 +125,7 @@ class Play extends Phaser.Scene {
         
         // set up flower group
         this.flowerThreeGroup = this.add.group({
-            runChildUpdate: true // make sure update runs on group children
+            runChildUpdate: true 
         })
         // wait a few seconds before spawning flowers
         this.time.delayedCall(this.flowerSpawnDelay + 500, () => { 
@@ -136,7 +135,7 @@ class Play extends Phaser.Scene {
         
 
         this.spiderGroup = this.add.group({
-            runChildUpdate: true // make sure update runs on group children
+            runChildUpdate: true 
         })
         this.time.delayedCall(this.spiderSpawnDelay, () => { 
             this.addSpider()
@@ -309,8 +308,7 @@ class Play extends Phaser.Scene {
     spiderCollision(bee, spider) {
         this.bee.destroyed = true
         this.bee.destroy()
-        // switch scenes after timer expires, passing current level to next scene
-        this.time.delayedCall(1000, () => { this.scene.start('gameOverScene') })
+        this.time.delayedCall(1000, () => { this.scene.start('gameOverScene', this.flowerScore) })
     }
 
     flowerCollision(bee, flower) {
