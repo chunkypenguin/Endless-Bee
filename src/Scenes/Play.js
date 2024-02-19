@@ -99,7 +99,6 @@ class Play extends Phaser.Scene {
         this.bee.setDragX(this.beeDragX)
         this.bee.setDepth(1)
         this.bee.destroyed = false 
-        this.bee.setBlendMode('SCREEN')
 
 
 
